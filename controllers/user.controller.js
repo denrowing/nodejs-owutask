@@ -1,47 +1,55 @@
-const dbUsers = require('../dataBase/Users');
-const fs = require('fs');
+const dbUsers = require('../dataBase/User');
+const passwordService = require('../servise/password.service');
+const userUtil = require('../util/user.util');
+
 
 module.exports = {
-    getUsers: (req, res) => {
-        fs.readFile('/home/denys/WebstormProjects/owu/nodejs-task/dataBase/users.json', 'utf8',
-            (err, data) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log(data.toString());
-            });
-        res.json(dbUsers);
-    },
-    createUser: (req, res) => {
-        console.log(req.body);
+    getUsers: async (req, res) => {
+        try {
+            const users = await dbUsers.find();
 
-        dbUsers.push({...req.body, id: dbUsers.length + 1});
-        res.json(dbUsers);
+            res.json(users);
+        } catch(e) {
+            res.json(e);
+        }
     },
 
-    getUserById: (req, res) => {
-        const { user_id } = req.params;
-        const user = dbUsers[user_id];
-        res.json({ user });
+    getUserById: async (req, res) => {
+        try{
+            const { user_id } = req.params;
+            let user = await dbUsers.findById(user_id).lean();
+
+            user = userUtil.userNormalizator(user);
+
+            res.json(user);
+        } catch(e) {
+            res.json(e.message);
+        }
     },
 
-    deleteUser: (req, res) => {
-        // fs.readFile('/home/denys/WebstormProjects/owu/nodejs-task/controllers/dataBase/users.json', 'utf8',
-        //     function(err, data) {
-        //         data = JSON.parse(data);
-        //         delete data[data.indexOf(data.filter(function(d) { return d.id === req.params.id; }))];
-        //         console.log(data);
-        //         fs.writeFile('/home/denys/WebstormProjects/owu/nodejs-task/controllers/dataBase/users.json',
-        //         JSON.stringify(data),
-        //             function(err) {
-        //                 if(err){return console.log(err);}
-        //             });
-        //     });
+    createUser: async (req, res) => {
+        try {
+            const hashedPassword = await passwordService.hash(req.body.password);
 
-        const { user_id } = req.params;
-        // dbUsers = dbUsers.filter(user => user.id !== user_id)
-        res.send(`User with the id ${user_id} deleted`);
+            console.log('********************');
+            console.log(hashedPassword);
+            console.log('********************');
+
+            const newUser = await dbUsers.create({...req.body, password: hashedPassword});
+            res.json(newUser);
+        } catch(e) {
+            res.json(e);
+        }
+    },
+
+    deleteUser:  async (req, res) => {
+        try{
+            const { user_id } = req.params;
+            const deletedUser = await dbUsers.findOneAndDelete(user_id).lean();
+            res.json({ deletedUser });
+        } catch (e) {
+            res.json(e);
+        }
     },
 
     loginUser: (req, res) => {
