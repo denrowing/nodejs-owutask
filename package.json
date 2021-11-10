@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.4",
-    "mongoose": "^6.0.12"
+    "mongoose": "^6.0.12",
+    "nodemailer": "^6.7.0",
+    "pm2": "^5.1.2"
   },
   "devDependencies": {
     "eslint": "^8.1.0",
@@ -14,7 +18,9 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "husky": "4.3.0",
-    "lint-staged": "^11.2.6"
+    "lint-staged": "^11.2.6",
+    "@types/jsonwebtoken": "^8.5.5",
+    "@types/nodemailer": "^6.4.4"
   },
   "husky": {
     "hooks": {

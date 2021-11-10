@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { userController } = require('../controllers/index');
-const userMiddleware = require('../middlewares/user.middleware');
+const { authMiddleware, userMiddleware } = require("../middlewares");
 
 router.get('/', userController.getUsers);
 
@@ -10,6 +10,10 @@ router.post('/', userMiddleware.isUserBodyValid, userMiddleware.isUserCreatedBef
 router.get('/:user_id', userController.getUserById);
 
 router.delete('/:user_id', userController.deleteUser);
+
+router.delete('/', authMiddleware.checkAccessToken, userController.deletePost);
+
+router.put('/:user_id', userController.updateUser);
 
 router.get('/auth', userController.loginUser); //userMiddleware.isUserCreated, userMiddleware.isPasswordCreated
 

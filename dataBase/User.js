@@ -13,16 +13,29 @@ const userSchema = new Schema({
         required: true,
         trim: true
     },
+    phone: {
+        type: String,
+        unique: true,
+        trim: true
+    },
     password: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        select: false
     },
     role: {
         type: String,
         default: userRoles.GUEST,
         enum: Object.values(userRoles)
+    },
+
+    apartment: {
+        type: Array,
+        required: false,
+        ref: 'apartments'
     }
+
 }, { timestamps: true });
 
 module.exports = model('user', userSchema);
