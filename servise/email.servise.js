@@ -16,4 +16,3 @@
 //         html: 'Hello, this mail is confirm you booking apartment'
 //     });
 // };
-
